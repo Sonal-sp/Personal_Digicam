@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User profile and preferences
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User photo projects (non-destructive parameters)
+    match /users/{userId}/projects/{projectId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User customized presets
+    match /users/{userId}/presets/{presetId} {
+      allow read, write, delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Public curated filter collections (read only for all authenticated users)
+    match /public_filters/{filterId} {
+      allow read: if true;
+      allow write: if false; // Admin only via Firebase Admin SDK
+    }
+
+    // Default catch-all denies access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

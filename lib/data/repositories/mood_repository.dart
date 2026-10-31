@@ -1,0 +1,257 @@
+import 'package:flutter/material.dart';
+import '../models/mood_preset.dart';
+import '../models/frame_style.dart';
+import 'filter_repository.dart';
+import 'sticker_repository.dart';
+
+class MoodRepository {
+  static final List<MoodPreset> allMoods = [
+    MoodPreset(
+      id: 'pookie_pink',
+      title: 'Pookie Pink',
+      subtitle: 'Coquette sweetness, silk ribbons & soft blush',
+      emoji: '🎀',
+      primaryColor: const Color(0xFFFCE4EF),
+      badgeColor: const Color(0xFFF472B6),
+      filter: FilterRepository.getById('pink_dream'),
+      brightness: 0.08,
+      contrast: 1.05,
+      saturation: 1.20,
+      vignette: 0.15,
+      recommendedFrame: FrameType.coquetteRibbon,
+      recommendedDateStamp: DateStampStyle.cyberPink,
+      recommendedStickers: [
+        StickerRepository.getById('bow_coquette_pink'),
+        StickerRepository.getById('heart_sparkle'),
+        StickerRepository.getById('flower_cherry_blossom'),
+      ],
+      recommendedCaptions: [
+        'in my soft girl era 🎀🩰',
+        'just a girl living in a pink dream ✨',
+        'coquette details & quiet afternoons',
+        'pookie vibes only 🌸',
+      ],
+    ),
+
+    MoodPreset(
+      id: '2000s_digicam',
+      title: '2000s Digicam',
+      subtitle: 'Raw CCD sensor pop, harsh flash & orange timestamp',
+      emoji: '📷',
+      primaryColor: const Color(0xFFE5E7EB),
+      badgeColor: const Color(0xFFFF7A00),
+      filter: FilterRepository.getById('y2k_flash'),
+      brightness: 0.05,
+      contrast: 1.25,
+      saturation: 1.20,
+      vignette: 0.30,
+      recommendedFrame: FrameType.polaroid,
+      recommendedDateStamp: DateStampStyle.retroOrange,
+      recommendedStickers: [
+        StickerRepository.getById('y2k_cd'),
+        StickerRepository.getById('star_y2k_sparkle'),
+        StickerRepository.getById('y2k_flip_phone'),
+      ],
+      recommendedCaptions: [
+        'straight out of a 2003 memory card 💾',
+        'flash on, vibes high ⚡',
+        'no face-tune, just CCD magic ✨',
+        'take me back to the digicam era 💿',
+      ],
+    ),
+
+    MoodPreset(
+      id: 'pinterest_girl',
+      title: 'Pinterest Girl',
+      subtitle: 'Clean neutral tones, golden light & aesthetic curation',
+      emoji: '☕',
+      primaryColor: const Color(0xFFFFF8F0),
+      badgeColor: const Color(0xFFD97706),
+      filter: FilterRepository.getById('soft_beige'),
+      brightness: 0.04,
+      contrast: 1.02,
+      saturation: 1.05,
+      temperature: 0.15,
+      recommendedFrame: FrameType.scrapbook,
+      recommendedDateStamp: DateStampStyle.whiteMinimal,
+      recommendedStickers: [
+        StickerRepository.getById('flower_daisy'),
+        StickerRepository.getById('sparkle_twinkle'),
+        StickerRepository.getById('heart_soft_white'),
+      ],
+      recommendedCaptions: [
+        'pinterest board coming to life 🕊️',
+        'aesthetic mornings & iced matcha 🍵',
+        'romanticizing the smallest ordinary moments',
+        'curated chaos & clean lines 🤍',
+      ],
+    ),
+
+    MoodPreset(
+      id: 'night_out',
+      title: 'Night Out',
+      subtitle: 'Xenon flash, moody club shadows & blurry party thrill',
+      emoji: '🍸',
+      primaryColor: const Color(0xFF1E1B4B),
+      badgeColor: const Color(0xFF818CF8),
+      filter: FilterRepository.getById('night_flash'),
+      brightness: 0.02,
+      contrast: 1.35,
+      saturation: 1.35,
+      vignette: 0.45,
+      recommendedFrame: FrameType.film35mm,
+      recommendedDateStamp: DateStampStyle.retroOrange,
+      recommendedStickers: [
+        StickerRepository.getById('sparkle_burst'),
+        StickerRepository.getById('star_cyber_glow'),
+        StickerRepository.getById('heart_pixel'),
+      ],
+      recommendedCaptions: [
+        'city lights & late night stories 🌃',
+        'blurrier the photo, better the night 🥂',
+        'flash was working overtime tonight ⚡',
+        'after hours aesthetic 🖤',
+      ],
+    ),
+
+    MoodPreset(
+      id: 'vintage_memories',
+      title: 'Vintage Memories',
+      subtitle: 'Warm analog 35mm grain, golden tones & sepia glow',
+      emoji: '🎞️',
+      primaryColor: const Color(0xFFFEF3C7),
+      badgeColor: const Color(0xFFB45309),
+      filter: FilterRepository.getById('old_film'),
+      brightness: 0.02,
+      contrast: 1.10,
+      temperature: 0.28,
+      grain: 0.40,
+      vignette: 0.25,
+      recommendedFrame: FrameType.film35mm,
+      recommendedDateStamp: DateStampStyle.retroOrange,
+      recommendedStickers: [
+        StickerRepository.getById('flower_rose'),
+        StickerRepository.getById('doodle_crown'),
+      ],
+      recommendedCaptions: [
+        'captured on vintage time 🕰️',
+        'some memories never lose their golden warmth',
+        'analog soul in a digital world 🎞️',
+        'looking back with sepia eyes ✨',
+      ],
+    ),
+
+    MoodPreset(
+      id: 'soft_girl',
+      title: 'Soft Girl',
+      subtitle: 'Dreamy haze, celestial butterflies & gentle pastel kisses',
+      emoji: '🌸',
+      primaryColor: const Color(0xFFF3E8FF),
+      badgeColor: const Color(0xFFA855F7),
+      filter: FilterRepository.getById('angel_glow'),
+      brightness: 0.09,
+      contrast: 0.95,
+      saturation: 1.12,
+      recommendedFrame: FrameType.scrapbook,
+      recommendedDateStamp: DateStampStyle.whiteMinimal,
+      recommendedStickers: [
+        StickerRepository.getById('butterfly_lavender'),
+        StickerRepository.getById('doodle_wings'),
+        StickerRepository.getById('sparkle_twinkle'),
+      ],
+      recommendedCaptions: [
+        'angel energy & butterfly thoughts 🦋',
+        'softness is my superpower ☁️',
+        'living inside a daydream 💜',
+        'quiet days filled with pretty things ✨',
+      ],
+    ),
+
+    MoodPreset(
+      id: 'messy_photo_dump',
+      title: 'Messy Photo Dump',
+      subtitle: 'Unfiltered candids, scrapbook collage & authentic moments',
+      emoji: '📦',
+      primaryColor: const Color(0xFFF1F5F9),
+      badgeColor: const Color(0xFF64748B),
+      filter: FilterRepository.getById('retro_ccd'),
+      brightness: 0.04,
+      contrast: 1.12,
+      saturation: 1.18,
+      grain: 0.15,
+      recommendedFrame: FrameType.scrapbook,
+      recommendedDateStamp: DateStampStyle.retroOrange,
+      recommendedStickers: [
+        StickerRepository.getById('cherry_glossy'),
+        StickerRepository.getById('star_cute_pastel'),
+        StickerRepository.getById('teddy_soft'),
+      ],
+      recommendedCaptions: [
+        'recently on camera roll 📱✌️',
+        'swipe for the uncensored lore 💌',
+        'chaotic photo dump from this week 🍒',
+        'bits & pieces of sweet life 🧩',
+      ],
+    ),
+
+    MoodPreset(
+      id: 'summer_diaries',
+      title: 'Summer Diaries',
+      subtitle: 'Sun-drenched golden warmth, ocean haze & beach days',
+      emoji: '☀️',
+      primaryColor: const Color(0xFFFEF9C3),
+      badgeColor: const Color(0xFFEAB308),
+      filter: FilterRepository.getById('golden_hour'),
+      brightness: 0.06,
+      contrast: 1.15,
+      saturation: 1.25,
+      temperature: 0.32,
+      vignette: 0.15,
+      recommendedFrame: FrameType.polaroid,
+      recommendedDateStamp: DateStampStyle.retroOrange,
+      recommendedStickers: [
+        StickerRepository.getById('star_cute_pastel'),
+        StickerRepository.getById('sparkle_twinkle'),
+        StickerRepository.getById('flower_daisy'),
+      ],
+      recommendedCaptions: [
+        'golden hour never ends here 🌅',
+        'sunkissed and carefree 🌊',
+        'salt in the air, sand in my hair 🐚',
+        'summer forever state of mind ☀️',
+      ],
+    ),
+
+    MoodPreset(
+      id: 'cafe_aesthetic',
+      title: 'Cafe Aesthetic',
+      subtitle: 'Oat milk lattes, warm bakeries & quiet book chapters',
+      emoji: '🥐',
+      primaryColor: const Color(0xFFEDE9FE),
+      badgeColor: const Color(0xFF7C3AED),
+      filter: FilterRepository.getById('cafe_aesthetic'),
+      brightness: 0.03,
+      contrast: 1.06,
+      temperature: 0.22,
+      recommendedFrame: FrameType.vintageBorder,
+      recommendedDateStamp: DateStampStyle.whiteMinimal,
+      recommendedStickers: [
+        StickerRepository.getById('heart_soft_white'),
+        StickerRepository.getById('doodle_cloud'),
+      ],
+      recommendedCaptions: [
+        'iced vanilla latte & good company ☕📖',
+        'table for one and my favorite thoughts',
+        'coffee shop playlist on repeat 🥐',
+        'warm moments between coffee sips 🤎',
+      ],
+    ),
+  ];
+
+  static MoodPreset getById(String id) {
+    return allMoods.firstWhere(
+      (m) => m.id == id,
+      orElse: () => allMoods.first,
+    );
+  }
+}
