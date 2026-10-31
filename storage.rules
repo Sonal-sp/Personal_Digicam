@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // User private exported shots & backups
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Public aesthetic assets & stickers (read-only for all users)
+    match /public_assets/{allPaths=**} {
+      allow read: if true;
+      allow write: if false; // Admin only via Firebase Admin SDK
+    }
+  }
+}

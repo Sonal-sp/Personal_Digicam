@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/services/auth_service.dart';
+import 'core/services/firebase_service.dart';
 import 'core/services/storage_service.dart';
 import 'core/theme/app_theme.dart';
 import 'presentation/navigation/main_navigation_screen.dart';
@@ -23,6 +24,9 @@ void main() async {
       systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
+
+  // Initialize Firebase (safely falls back to local offline mode if credentials not configured)
+  await FirebaseService.initialize();
 
   // Initialize Core Services
   final storageService = await StorageService.init();
