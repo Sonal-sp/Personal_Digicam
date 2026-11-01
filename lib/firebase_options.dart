@@ -1,5 +1,8 @@
 // File generated/configured for Aesthetic Digicam.
-// Replace with your own project options via `flutterfire configure` if desired.
+// Secure configuration using environment definitions with safe dummy fallbacks
+// To provide live production keys at build time:
+// flutter run --dart-define=FIREBASE_ANDROID_API_KEY=your_key ...
+// Or run `flutterfire configure` to generate your project-linked credentials.
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
@@ -22,7 +25,10 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAestheticDigicamWebApiKey_Example',
+    apiKey: String.fromEnvironment(
+      'FIREBASE_WEB_API_KEY',
+      defaultValue: 'DEMO_PLACEHOLDER_WEB_KEY',
+    ),
     appId: '1:1234567890:web:abcdef1234567890',
     messagingSenderId: '1234567890',
     projectId: 'aesthetic-digicam',
@@ -31,7 +37,10 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAestheticDigicamAndroidApiKey_Example',
+    apiKey: String.fromEnvironment(
+      'FIREBASE_ANDROID_API_KEY',
+      defaultValue: 'DEMO_PLACEHOLDER_ANDROID_KEY',
+    ),
     appId: '1:1234567890:android:abcdef1234567890',
     messagingSenderId: '1234567890',
     projectId: 'aesthetic-digicam',
@@ -39,7 +48,10 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAestheticDigicamiOSApiKey_Example',
+    apiKey: String.fromEnvironment(
+      'FIREBASE_IOS_API_KEY',
+      defaultValue: 'DEMO_PLACEHOLDER_IOS_KEY',
+    ),
     appId: '1:1234567890:ios:abcdef1234567890',
     messagingSenderId: '1234567890',
     projectId: 'aesthetic-digicam',
