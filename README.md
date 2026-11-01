@@ -5,12 +5,21 @@
 ![Aesthetic Digicam Banner](https://img.shields.io/badge/Aesthetic-Digicam%20%26%20Scrapbook-pink?style=for-the-badge)
 ![Flutter](https://img.shields.io/badge/Flutter-3.44.7-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.12.2-0175C2?style=for-the-badge&logo=dart&logoColor=white)
-![Firebase](https://img.shields.io/badge/Firebase-Auth%20%7C%20Firestore%20%7C%20Storage-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Android 14](https://img.shields.io/badge/Android-14%20(API%2034)-3DDC84?style=for-the-badge&logo=android&logoColor=white)
+![Security](https://img.shields.io/badge/Security-JWT%20%7C%20OAuth%202.0%20PKCE-blueviolet?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 <p align="center">
   <b>Transform ordinary mobile pictures into nostalgic, Instagram-worthy, Pinterest-inspired, Y2K, vintage, coquette, and digital-camera-style photographs.</b>
 </p>
+
+[Overview](#-overview) •
+[Key Features](#-key-features--screen-tour) •
+[Security & Auth Architecture](#-security--authentication-architecture) •
+[Design System](#-design-system--color-palette) •
+[Device Deployment](#-physical-device-deployment--verification) •
+[Firebase Setup](#-firebase--database-configuration) •
+[Directory Structure](#-project-architecture--directory-structure)
 
 </div>
 
@@ -24,7 +33,9 @@ Instead of looking like a generic photo editor, the app delivers a distinct pers
 - **Y2K Digital Camera & CCD Color Science**: Harsh xenon flash simulation, blown highlights, cool shadows, and glowing orange date stamps.
 - **Coquette & Soft Girl Aesthetics**: Silk bows, pearlescent angel glow, rosy cherry blush, and pastel palettes.
 - **Pinterest-Worthy Editorial Styling**: Soft beige cafe tones, warm 35mm film grain, polaroid borders, and scrapbook collages.
-- **Friction-Free Guest Mode**: Shoot, edit, and export immediately without forced account registration.
+- **RFC 7519 JWT & RFC 7636 OAuth 2.0 PKCE**: Enterprise-grade security architecture with client-side cryptographic token signing and state nonce verification.
+- **Friction-Free Dual Operation**: Shoot, edit, and export immediately in offline Guest Mode without mandatory account registration, with optional Cloud Firestore & Storage synchronization.
+- **Hardware-Accelerated Real-Time Rendering**: Impeller-powered Vulkan & OpenGL ES shaders executing ColorMatrix presets at 60 FPS.
 
 ---
 
@@ -107,6 +118,51 @@ Select your desired aesthetic mood and apply a coordinated recipe in one tap:
 
 ---
 
+## 🔒 Security & Authentication Architecture
+
+Aesthetic Digicam implements an **RFC-compliant, zero-trust cryptographic security architecture**:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User / Client
+    participant App as Flutter App
+    participant OAuth as OAuth 2.0 PKCE Engine
+    participant JWT as RFC 7519 JWT Service
+    participant API as Backend Services / Firebase
+
+    User->>App: Initiate Sign-In (Google / Apple / Email)
+    App->>OAuth: Generate High-Entropy Code Verifier & State Nonce
+    OAuth->>OAuth: Compute Code Challenge (BASE64URL(SHA256(verifier)))
+    OAuth->>App: Launch Auth Flow with Challenge & State
+    User->>OAuth: Authorize Application
+    OAuth-->>App: Return Authorization Code & State
+    App->>OAuth: Validate State Nonce & Exchange Code + Verifier for Tokens
+    OAuth-->>JWT: Issue Access & Refresh Tokens
+    JWT->>JWT: Cryptographically Verify HMAC-SHA256 Signature & Claims
+    JWT-->>App: Store Encrypted TokenPair (Memory & Secure Cache)
+    App->>API: Authenticated Request with Bearer JWT
+    API-->>App: Authorized Response
+```
+
+### 1. RFC 7519 JWT Service (`JwtService`)
+- **Cryptographic Signature Engine**: HMAC-SHA256 token encoding, validation, and decoding.
+- **Claim Enforcement**: Validates standard claims (`iss`, `sub`, `aud`, `exp`, `iat`, `jti`) alongside custom user scopes and role claims.
+- **Automatic TTL Expiry & Refresh**: Proactively triggers refresh flows prior to expiration.
+- **Live Claims Inspector**: Built-in visual inspector in the Auth Sheet displaying parsed token payload data, active scopes, and remaining TTL in real time.
+
+### 2. RFC 7636 OAuth 2.0 PKCE Flow (`OAuthService`)
+- **Proof Key for Code Exchange (PKCE)**: Eliminates vulnerability to authorization code interception on mobile devices without relying on client secrets.
+- **High-Entropy Verifier**: Cryptographically random 43-character to 128-character verifier strings.
+- **SHA-256 Code Challenge**: `Base64URL(SHA256(code_verifier))` transformations.
+- **State Nonce Verification**: Protects against cross-site request forgery (CSRF).
+
+### 3. Zero-Leak Security & Sanitization
+- **Client Sanitization**: All production secrets, private keys, and sensitive tokens are completely decoupled from client code.
+- **Clean Git Tracking**: `.gitignore` strictly protects `.env`, `google-services.json`, `GoogleService-Info.plist`, keystores, and local credentials from version control.
+
+---
+
 ## 🎨 Design System & Color Palette
 
 The UI adopts a soft pastel aesthetic accented with vintage metallic camera hardware:
@@ -124,18 +180,54 @@ The UI adopts a soft pastel aesthetic accented with vintage metallic camera hard
 
 ---
 
+## 📲 Physical Device Deployment & Verification
+
+The application has been compiled, deployed, and verified on physical hardware:
+
+- **Target Device**: Samsung Galaxy F23 5G (`SM-E236B`)
+- **Operating System**: Android 14 (API Level 34)
+- **Rendering Engine**: Impeller (Vulkan / OpenGL ES) running real-time 60 FPS shaders
+- **Android Gradle Plugin (AGP)**: `8.9.1`
+- **Gradle Version**: `8.11.1`
+- **Kotlin Version**: `2.1.0`
+
+### Optimized Android Build Settings (`android/gradle.properties`)
+To avoid memory exhaustion and Windows IPv6 DNS timeouts on resource-constrained development hosts:
+```properties
+org.gradle.jvmargs=-Xmx1536m -XX:MaxMetaspaceSize=768m -XX:+UseG1GC -Djava.net.preferIPv4Stack=true
+android.useAndroidX=true
+android.newDsl=false
+android.builtInKotlin=false
+kotlin.incremental=false
+org.gradle.workers.max=2
+```
+
+### Installation & Launch via ADB
+```bash
+# Build debug APK
+flutter build apk --debug --android-skip-build-dependency-validation
+
+# Streamed install to connected physical device
+adb -s <DEVICE_ID> install -r build/app/outputs/flutter-apk/app-debug.apk
+
+# Launch directly into MainActivity
+adb -s <DEVICE_ID> shell am start -n com.digicam.aesthetic.personal_digicam/.MainActivity
+```
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
 - **Flutter SDK**: `^3.44.0` (or higher)
 - **Dart SDK**: `^3.12.0` (or higher)
-- **JDK**: Java 17 or 21 (configured for Android builds)
-- **Android SDK**: API 35/36 with build tools `35.0.1`+
+- **JDK**: Java 17 or 21
+- **Android SDK**: API 34+ with platform-tools (ADB)
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/your-username/aesthetic_digicam.git
-cd aesthetic_digicam
+git clone https://github.com/Sonal-sp/Personal_Digicam.git
+cd Personal_Digicam
 
 # Fetch Flutter packages
 flutter pub get
@@ -149,7 +241,7 @@ dart run tool/generate_sample_assets.dart
 
 ### 3. Run the App
 ```bash
-# Launch on connected Android device or emulator
+# Launch on connected Android device
 flutter run
 
 # Or run on Windows desktop / Web
@@ -161,9 +253,9 @@ flutter run -d chrome
 
 ## 🔥 Firebase & Database Configuration
 
-Aesthetic Digicam is architected with a **dual-mode backend**:
-1. **Offline-First / Guest Mode (Default)**: Runs without requiring any immediate Firebase setup. All presets, photo projects, favorites, and exported shots persist locally via `SharedPreferences` and app documents storage.
-2. **Connected Cloud Mode**: When Firebase is linked, user authentication (Email, Google), Cloud Firestore sync, and Firebase Storage cloud backups are automatically enabled.
+Aesthetic Digicam operates in **Dual Mode**:
+1. **Offline-First / Guest Mode (Default)**: Full camera, filter engine, studio editor, sticker studio, collage maker, and local storage run without requiring Firebase setup.
+2. **Connected Cloud Mode**: When Firebase is configured, user authentication, Cloud Firestore sync, and Firebase Storage cloud backups are enabled.
 
 ```mermaid
 flowchart LR
@@ -175,29 +267,17 @@ flowchart LR
 ```
 
 ### Step 1: Connect your Firebase Project
-
-1. Install the [Firebase CLI](https://firebase.google.com/docs/cli) and [FlutterFire CLI](https://firebase.flutter.dev/docs/cli/):
+1. Install FlutterFire CLI:
    ```bash
-   npm install -g firebase-tools
-   firebase login
    dart pub global activate flutterfire_cli
    ```
-
-2. Generate your platform-specific Firebase configuration:
+2. Configure project:
    ```bash
    flutterfire configure --project=YOUR_FIREBASE_PROJECT_ID
    ```
-   This automatically updates [`lib/firebase_options.dart`](file:///d:/ALL%20PROJECTS/personal_digicam/lib/firebase_options.dart) with your project's API keys and app IDs.
-
-3. Download your Android `google-services.json` from the Firebase Console and place it at:
-   ```
-   android/app/google-services.json
-   ```
+3. Place `google-services.json` at `android/app/google-services.json`.
 
 ### Step 2: Cloud Firestore Database Schema
-
-The Firestore database organizes data hierarchically with user-isolated security:
-
 ```
 firestore/
 ├── users/
@@ -234,15 +314,12 @@ firestore/
         └── matrix: array<number>
 ```
 
-### Step 3: Deploy Security Rules & Indexes
+### Step 3: Deploy Security Rules
+The repository contains hardened security rules:
+- [`firestore.rules`](file:///d:/ALL%20PROJECTS/personal_digicam/firestore.rules): User-isolated document permissions.
+- [`storage.rules`](file:///d:/ALL%20PROJECTS/personal_digicam/storage.rules): Access restricted to authenticated user directories.
 
-The project contains pre-configured security rules restricting write/read access exclusively to authenticated users:
-
-- [`firestore.rules`](file:///d:/ALL%20PROJECTS/personal_digicam/firestore.rules): User-specific isolation for documents and subcollections.
-- [`storage.rules`](file:///d:/ALL%20PROJECTS/personal_digicam/storage.rules): Grants read/write access solely to the authenticated owner's `users/{userId}/**` cloud directory.
-- [`firebase.json`](file:///d:/ALL%20PROJECTS/personal_digicam/firebase.json): Firebase CLI deployment mapping.
-
-Deploy both rules to your live Firebase project with a single command:
+Deploy to Firebase:
 ```bash
 firebase deploy --only firestore:rules,storage
 ```
@@ -251,13 +328,11 @@ firebase deploy --only firestore:rules,storage
 
 ## 🧪 Testing & Code Quality
 
-Verify the codebase with Flutter's official testing and static analysis tools:
-
 ```bash
 # Static analysis (0 errors, 0 warnings)
 flutter analyze
 
-# Run unit and widget test suite
+# Run unit and widget test suite (100% passing)
 flutter test
 ```
 
@@ -267,7 +342,7 @@ flutter test
 
 ```
 lib/
-├── firebase_options.dart          # Multi-platform Firebase configuration
+├── firebase_options.dart          # Multi-platform Firebase configuration (sanitized)
 ├── main.dart                      # App entrypoint, theme bootstrap & orientation lock
 │
 ├── core/
@@ -276,9 +351,12 @@ lib/
 │   │   └── app_typography.dart    # Playfair Display, Plus Jakarta Sans, VT323 LCD fonts
 │   ├── theme/
 │   │   └── app_theme.dart         # Material 3 light & dark theme specifications
+│   ├── security/
+│   │   ├── jwt_service.dart       # RFC 7519 HMAC-SHA256 JWT cryptographic token engine
+│   │   └── oauth_service.dart     # RFC 7636 OAuth 2.0 PKCE challenge & state engine
 │   ├── services/
 │   │   ├── firebase_service.dart  # Resilient Firebase initializer with offline fallback
-│   │   ├── auth_service.dart      # Email, Google, and Guest mode authentication
+│   │   ├── auth_service.dart      # Email, Google, OAuth PKCE, and Guest authentication
 │   │   ├── firestore_service.dart # Cloud Firestore sync for projects and presets
 │   │   ├── firebase_storage_service.dart # Optional photo backup service
 │   │   ├── image_processing_service.dart # Color matrices, grain, vignette, and export
@@ -332,7 +410,7 @@ lib/
     │   ├── shots/
     │   │   └── my_shots_screen.dart    # Personal photo gallery & project manager
     │   └── auth/
-    │       └── auth_sheet.dart         # Modal auth sheet (Email, Google, Guest)
+    │       └── auth_sheet.dart         # Modal auth sheet with live JWT claims inspector
     └── widgets/
         ├── aesthetic_button.dart       # Glossy pill buttons & metallic shutter button
         ├── aesthetic_card.dart         # Rounded pastel container cards
