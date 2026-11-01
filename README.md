@@ -423,3 +423,19 @@ lib/
 ## 📄 License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
+---
+
+### 📸 Let's Connect!
+
+Made with ♡ by **Sonal Parmar**
+
+[![GitHub](https://img.shields.io/badge/GitHub-Sonal--sp-181717?style=for-the-badge&logo=github)](https://github.com/Sonal-sp)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin)](www.linkedin.com/in/sonal-parmar-8898752a2)
+[![Email](https://img.shields.io/badge/Email-Contact-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:sonalparmar2697@gmail.com)
+
+If you enjoyed this little project, don't forget to ⭐ **star this repository!**
+
+It would mean a lot and keep me motivated to build more. ♡
+
+---
